@@ -9,20 +9,11 @@ Console.WriteLine("Hello, World!");
  * Note that I haven't found any clearly defined symbols in the 64 bit header.
  * */
 
-
-var draw = new Draw();
-draw.DrawStarMap();
-
 var prog = new Interpret();
 prog.BreakImageAtIteration = 942;
 prog.Run(BitArrayHelper.CreateBitArray(Interpret.Footer64String));
 prog.BreakImageAtIteration = 949;
 prog.Run(BitArrayHelper.CreateBitArray(Interpret.Footer64String, reverse: true));
-
-
-
-
-
 
 return;
 
