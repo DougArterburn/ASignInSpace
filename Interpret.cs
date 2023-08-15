@@ -26,7 +26,7 @@ namespace ASignInSpace
             set;
         } = 65536;
 
-        bool TraceExecution
+        public bool TraceExecution
         {
             get;
             set;
@@ -56,7 +56,7 @@ namespace ASignInSpace
             SortedDictionary<string, int> saveExecutionPointer = new SortedDictionary<string, int>();
             BitArray ProgramOutput = new BitArray(65536);
             int iteration = 0;
-            int ProgramOutputIndex=0;
+            int ProgramOutputIndex = 0;
             int executionPointer = 0;
             int flipRelativeAddress;
             string saveState;
@@ -93,7 +93,7 @@ namespace ASignInSpace
 
                 flipRelativeAddress = getValueInstruction(executionPointer);
                 var flipAbsoluteAddress = flipBit(flipRelativeAddress);
-                ProgramOutput[ProgramOutputIndex] = true; 
+                ProgramOutput[ProgramOutputIndex] = true;
                 executionPointer = nextAddressInstruction(executionPointer);
 
 
@@ -102,7 +102,7 @@ namespace ASignInSpace
                  * Don't run forever. I have fed this interpreter bit strings that seem to run forever.
                  * 
                  * */
-                if (iteration > MaxIterations) 
+                if (iteration > MaxIterations)
                 {
                     Console.WriteLine($"Aborting after {iteration} iterations.");
                     draw();
@@ -122,7 +122,8 @@ namespace ASignInSpace
             int increment(int address)
             {
                 address++;
-                if (address == AlienProgram.Length)
+                //if (address == AlienProgram.Length)
+                if (address == AlienProgram.Length - 16)
                 {
                     return 0;
                 }
