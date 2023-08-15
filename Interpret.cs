@@ -122,8 +122,7 @@ namespace ASignInSpace
             int increment(int address)
             {
                 address++;
-                //if (address == AlienProgram.Length)
-                if (address == AlienProgram.Length - 16)
+                if (address == AlienProgram.Length)
                 {
                     return 0;
                 }
