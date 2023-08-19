@@ -66,6 +66,13 @@ namespace ASignInSpace
             int executionPointer = 0;
             int flipRelativeAddress;
             string saveState;
+            StreamWriter traceWriter = null;
+            StreamWriter addressWriter = null;
+            if (TraceExecution)
+            {
+                traceWriter = new StreamWriter($"{FilenamePrefix}-TraceState.txt", append: false);
+                addressWriter = new StreamWriter($"{FilenamePrefix}-TraceAddresses.txt", append: false);
+            }
             do
             {
 
@@ -75,25 +82,25 @@ namespace ASignInSpace
                  * There must be a better way to detect END OF PROGRAM!
                  * 
                  * */
-                //saveState = BitArrayHelper.ConvertToString(AlienProgram);
-                //if (saveExecutionPointer.ContainsKey(saveState))
-                //{
-                //    if (saveExecutionPointer[saveState] == executionPointer)
-                //    {
-                //        Console.WriteLine($"Program ended after {iteration} iterations.");
-                //        draw();
-                //        return;
-                //    }
+                saveState = BitArrayHelper.ConvertToString(AlienProgram);
+                if (saveExecutionPointer.ContainsKey(saveState))
+                {
+                    if (saveExecutionPointer[saveState] == executionPointer)
+                    {
+                        endOfProgramProcessing();
+                        Console.WriteLine($"Program ended after {iteration} iterations.");                       
+                        return;
+                    }
 
-                //}
-                //else
-                //{
-                //    saveExecutionPointer[saveState] = executionPointer;
-                //    if (TraceExecution)
-                //    {
-                //        Console.WriteLine(saveState);
-                //    }
-                //}
+                }
+                else
+                {
+                    saveExecutionPointer[saveState] = executionPointer;
+                    if (TraceExecution)
+                    {
+                        traceWriter.WriteLine(saveState);
+                    }
+                }
 
                 iteration++;
 
@@ -110,8 +117,8 @@ namespace ASignInSpace
                  * */
                 if (iteration > MaxIterations)
                 {
+                    endOfProgramProcessing();
                     Console.WriteLine($"Aborting after {iteration} iterations.");
-                    draw();
                     return;
                 }
 
@@ -123,7 +130,19 @@ namespace ASignInSpace
             } while (true);
 
 
-            return;
+
+            void endOfProgramProcessing()
+            {
+                if (traceWriter != null)
+                {
+                    traceWriter.Close();                   
+                }
+                if (addressWriter != null)
+                {
+                    addressWriter.Close();
+                }
+                draw();
+            }
 
             int increment(int address)
             {
@@ -151,6 +170,10 @@ namespace ASignInSpace
                 int j, count;
                 for (j = executionPointer, count = 0; count < relativeAddress; j = increment(j), count++) ;
                 ProgramOutputIndex = getAddressMap(executionPointer);
+                if (TraceExecution)
+                {
+                    addressWriter.WriteLine(ProgramOutputIndex.ToString("X"));
+                }
                 AlienProgram[j] = !AlienProgram[j];
                 return j;
             }
@@ -181,11 +204,11 @@ namespace ASignInSpace
                 d.Width = 256;
                 d.Height = 256;
                 d.WriteBinFile = true;
-                d.PngFilename = @$"{FilenamePrefix}{FileNumber}.png";
+                d.PngFilename = @$"{FilenamePrefix}-{FileNumber}.png";
                 d.DrawBitArray(ProgramOutput);
                 ProgramOutputIndex = 0;
                 ProgramOutput.SetAll(false);
-                Console.WriteLine(@$"Writing file {FilenamePrefix}{FileNumber}.png after {iteration} iterations.");
+                Console.WriteLine(@$"Writing file {FilenamePrefix}-{FileNumber}.png after {iteration} iterations.");
             }
 
         }
