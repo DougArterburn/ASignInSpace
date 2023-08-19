@@ -103,7 +103,7 @@ namespace ASignInSpace
             {
                 if (data[i]) onCount++;
             }
-           //Console.WriteLine($"On count = {onCount}");
+           Console.WriteLine($"On count = {onCount}");
         }
     }
 }

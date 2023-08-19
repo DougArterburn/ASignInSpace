@@ -32,6 +32,12 @@ namespace ASignInSpace
             set;
         } = false;
 
+        public string FilenamePrefix
+        {
+            get;
+            set;
+        } = "OISC";
+
 
         /*
          * This is kind of hack at this point in cases where the output impage looks better when skipping initial plot points.
@@ -69,25 +75,25 @@ namespace ASignInSpace
                  * There must be a better way to detect END OF PROGRAM!
                  * 
                  * */
-                saveState = BitArrayHelper.ConvertToString(AlienProgram);
-                if (saveExecutionPointer.ContainsKey(saveState))
-                {
-                    if (saveExecutionPointer[saveState] == executionPointer)
-                    {
-                        Console.WriteLine($"Program ended after {iteration} iterations.");
-                        draw();
-                        return;
-                    }
+                //saveState = BitArrayHelper.ConvertToString(AlienProgram);
+                //if (saveExecutionPointer.ContainsKey(saveState))
+                //{
+                //    if (saveExecutionPointer[saveState] == executionPointer)
+                //    {
+                //        Console.WriteLine($"Program ended after {iteration} iterations.");
+                //        draw();
+                //        return;
+                //    }
 
-                }
-                else
-                {
-                    saveExecutionPointer[saveState] = executionPointer;
-                    if (TraceExecution)
-                    {
-                        Console.WriteLine(saveState);
-                    }
-                }
+                //}
+                //else
+                //{
+                //    saveExecutionPointer[saveState] = executionPointer;
+                //    if (TraceExecution)
+                //    {
+                //        Console.WriteLine(saveState);
+                //    }
+                //}
 
                 iteration++;
 
@@ -175,11 +181,11 @@ namespace ASignInSpace
                 d.Width = 256;
                 d.Height = 256;
                 d.WriteBinFile = true;
-                d.PngFilename = @$"OISC{FileNumber}.png";
+                d.PngFilename = @$"{FilenamePrefix}{FileNumber}.png";
                 d.DrawBitArray(ProgramOutput);
                 ProgramOutputIndex = 0;
                 ProgramOutput.SetAll(false);
-                Console.WriteLine(@$"Writing file OISC{FileNumber}.png after {iteration} iterations.");
+                Console.WriteLine(@$"Writing file {FilenamePrefix}{FileNumber}.png after {iteration} iterations.");
             }
 
         }

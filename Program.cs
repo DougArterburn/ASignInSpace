@@ -2,8 +2,22 @@
 using ASignInSpace;
 using System.Collections;
 
-RunFooter();
-RunTheStarmap();
+//RunFooter();
+//RunTheStarmap();
+
+//BitArray step2 = BitArrayHelper.CreateBitArray(File.ReadAllBytes(@"C:\ASignInSpace\Source\AlienInterpreter\bin\Debug\net6.0-windows\OISC1Save.bin"));
+//BitArray step1 = GetStarmap();
+//var prog = new Interpret();
+//prog.FilenamePrefix = "StarMapStep1-";
+//prog.MaxIterations = 65536/4;
+//prog.Run(step1);
+
+BitArray step2 = BitArrayHelper.CreateBitArray(File.ReadAllBytes("StarMapStep1-1.bin"));
+var prog = new Interpret();
+prog.FilenamePrefix = "StarMapStep2-";
+prog.MaxIterations = 65536;
+prog.Run(step2);
+
 
 return;
 
@@ -15,10 +29,10 @@ void RunFooter()
  * */
 
     var prog = new Interpret();
-    prog.BreakImageAtIteration = 942;
+    //prog.BreakImageAtIteration = 942;
     prog.Run(BitArrayHelper.CreateBitArray(Interpret.Footer64String));
-    prog.BreakImageAtIteration = 949;
-    prog.Run(BitArrayHelper.CreateBitArray(Interpret.Footer64String, reverse: true));
+    //prog.BreakImageAtIteration = 949;
+    //prog.Run(BitArrayHelper.CreateBitArray(Interpret.Footer64String, reverse: true));
 }
 void RunTheStarmap()
 {
