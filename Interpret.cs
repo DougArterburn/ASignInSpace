@@ -7,6 +7,22 @@ namespace ASignInSpace
 
         public const string Header64String = "0000011010010000001010000100000101000100100010000100010010001000";
         public const string Footer64String = "1111100000111110000000000000000000000000000000000000000000000000";
+        public const string Header72String = "111111110000011010010000001010000100000101000100100010000100010010001000";
+        public const string Footer72String = "111110000011111000000000000000000000000000000000000000000000000000001111";
+        public const string HeaderFooter144String = $"11111111{Interpret.Header64String}{Interpret.Footer64String}00001111";
+
+
+        public int InstructionAddressSize
+        {
+            get;
+            set;
+        } = 6;
+
+        public int MapAddressSize
+        {
+            get;
+            set;
+        } = 12;
 
         public BitArray AlienProgram
         {
@@ -38,6 +54,11 @@ namespace ASignInSpace
             set;
         } = "OISC";
 
+        public BitArray ProgramOutput
+        {
+            get;
+            set;
+        }
 
         /*
          * This is kind of hack at this point in cases where the output impage looks better when skipping initial plot points.
@@ -56,13 +77,16 @@ namespace ASignInSpace
 
         public void Run(BitArray AlienProgram)
         {
-            const int AddressSize = 4;
+
             this.AlienProgram = AlienProgram;
+            ProgramOutput = new BitArray((int) Math.Pow(2, MapAddressSize));
+            int instructionBlockSize = (int) Math.Pow(2, InstructionAddressSize);
+            int mapBlockSize = (int)Math.Pow(2, MapAddressSize);
 
             SortedDictionary<string, int> saveExecutionPointer = new SortedDictionary<string, int>();
-            BitArray ProgramOutput = new BitArray(65536);
             int iteration = 0;
             int ProgramOutputIndex = 0;
+            ProgramOutput.SetAll(false);
             int executionPointer = 0;
             int flipRelativeAddress;
             string saveState;
@@ -88,7 +112,7 @@ namespace ASignInSpace
                     if (saveExecutionPointer[saveState] == executionPointer)
                     {
                         endOfProgramProcessing();
-                        Console.WriteLine($"Program ended after {iteration} iterations.");                       
+                        Console.WriteLine($"Program ended after {iteration} iterations.");
                         return;
                     }
 
@@ -112,7 +136,7 @@ namespace ASignInSpace
 
                 /*
                  * 
-                 * Don't run forever. I have fed this interpreter bit strings that seem to run forever.
+                 * Don't run forever. I have fed this interpreter bit strings that seem to run forever without repeating.
                  * 
                  * */
                 if (iteration > MaxIterations)
@@ -127,6 +151,16 @@ namespace ASignInSpace
                     draw();
                 }
 
+                //int oneCount = 0;
+                //for (int c = 0; c < ProgramOutput.Length; c++)
+                //{
+                //    if (ProgramOutput[c]) oneCount++;
+                //}
+                //if (oneCount >= 625)
+                //{
+                //    draw();
+                //}
+
             } while (true);
 
 
@@ -135,7 +169,7 @@ namespace ASignInSpace
             {
                 if (traceWriter != null)
                 {
-                    traceWriter.Close();                   
+                    traceWriter.Close();
                 }
                 if (addressWriter != null)
                 {
@@ -157,7 +191,7 @@ namespace ASignInSpace
             int getValueInstruction(int relativeAddress)
             {
                 int value = 0;
-                for (int j = relativeAddress, count = 0; count < AddressSize; j = increment(j), count++)
+                for (int j = relativeAddress, count = 0; count < InstructionAddressSize; j = increment(j), count++)
                 {
                     value *= 2;
                     if (AlienProgram[j]) value += 1;
@@ -181,7 +215,7 @@ namespace ASignInSpace
             int nextAddressInstruction(int address)
             {
                 int nextAddress, count;
-                for (nextAddress = address, count = 0; count < AddressSize; nextAddress = increment(nextAddress), count++) ;
+                for (nextAddress = address, count = 0; count < InstructionAddressSize; nextAddress = increment(nextAddress), count++) ;
                 return nextAddress;
             }
 
@@ -189,7 +223,7 @@ namespace ASignInSpace
             {
                 int value = 0;
                 int addr, count;
-                for (addr = address, count = 0; count < 16; addr = increment(addr), count++)
+                for (addr = address, count = 0; count < MapAddressSize; addr = increment(addr), count++)
                 {
                     value *= 2;
                     if (AlienProgram[addr]) value += 1;

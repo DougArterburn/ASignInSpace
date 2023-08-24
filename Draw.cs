@@ -62,7 +62,6 @@ namespace ASignInSpace
 
         public void DrawBitArray(BitArray data)
         {
-            int width = (int)Math.Sqrt(data.Length);
             Bitmap dialImage = new Bitmap(Width, Height);
             int x = 0, y = 0;
             Graphics g = Graphics.FromImage(dialImage);
